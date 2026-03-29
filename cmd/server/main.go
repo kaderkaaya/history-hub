@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	router := apphttp.GinRouter()
+	router := apphttp.HistoryHubRouter()
 	log.Println("server started on :8080")
 	//Aslında bütün programın basladıgı yer burası index.js gibi.
 	//http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
