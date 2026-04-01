@@ -10,7 +10,7 @@ import (
 	utils "history-hub/pkg/utils"
 )
 
-func HistoryHubRouter() *gin.Engine {
+func HistoryHubRouter(eventsHandler *handlers.EventsHandler) *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger()) //r.Use olusturunca middle olsuturduk.
 	r.Use(gin.Recovery())
@@ -21,6 +21,6 @@ func HistoryHubRouter() *gin.Engine {
 
 	r.GET("/health", handlers.HealthHandler)
 	events := r.Group("/events")
-	events.GET("/get-events", handlers.GetEventsHandler)
+	events.GET("/get-events", eventsHandler.GetEvents)
 	return r
 }

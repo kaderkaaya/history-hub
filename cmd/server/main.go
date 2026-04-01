@@ -1,14 +1,25 @@
 package main
 
 import (
+	"fmt"
 	"log"      //Logger kütüphanesi yani conloglar için bu kütüpü import ederiz.
 	"net/http" //web server kütüp
+	"time"
 
+	config "history-hub/internal/config"
 	apphttp "history-hub/internal/http"
+	handlers "history-hub/internal/http/handlers"
+	provider "history-hub/internal/provider/wikimedia"
+	service "history-hub/internal/service"
 )
 
 func main() {
-	router := apphttp.HistoryHubRouter()
+	cfg := config.Load()
+	fmt.Printf("cfg.WikimediaBaseURL", cfg.WikimediaBaseURL)
+	client := provider.NewClient(cfg.WikimediaBaseURL, 10*time.Second, "history-hub")
+	eventService := service.NewEventsService(client)
+	eventHandler := handlers.NewEventsHandler(eventService)
+	router := apphttp.HistoryHubRouter(eventHandler)
 	log.Println("server started on :8080")
 	//Aslında bütün programın basladıgı yer burası index.js gibi.
 	//http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

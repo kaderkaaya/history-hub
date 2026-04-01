@@ -1,8 +1,8 @@
 package wikimedia
 
 import (
+	"history-hub/internal/config"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -14,7 +14,7 @@ type Client struct {
 
 func NewClient(baseURL string, timeout time.Duration, userAgent string) *Client {
 	return &Client{
-		WikimediaBaseURL: os.Getenv("WIKIMEDIA_BASE_URL"),
+		WikimediaBaseURL: config.Load().WikimediaBaseURL,
 		UserAgent:        "history-hub", //bazi apiler isteğin kimden geldiğine bkar bundan dolayı bunu ekliyoruz.
 		//eğer bir saldırı olursa engeller ama bunu eklediğimizde bizden geldiği belli olur.
 		HTTPClient: &http.Client{Timeout: timeout},
