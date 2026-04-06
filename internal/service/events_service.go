@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	models "history-hub/internal/model"
 	provider "history-hub/internal/provider/wikimedia"
 )
@@ -21,6 +22,12 @@ func (eventService *EventsService) GetEvents(ctx context.Context, lang, typ, mon
 	}
 
 	var events []models.Event
+	fmt.Sprint(
+		"typ", typ,
+		"lang", lang,
+		"month", month,
+		"day", day,
+	)
 	for _, e := range data.Events {
 		var title, url string
 		if len(e.Pages) > 0 {
@@ -30,6 +37,7 @@ func (eventService *EventsService) GetEvents(ctx context.Context, lang, typ, mon
 		events = append(events, models.Event{
 			Year: e.Year, Text: e.Text, Title: title, URL: url,
 		})
+		fmt.Sprintln("events", events)
 	}
 	return events, false, nil
 }

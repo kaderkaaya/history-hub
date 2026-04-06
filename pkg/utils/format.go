@@ -7,3 +7,7 @@ func NormalizeMonthDay(value string) string {
 	fmt.Sscanf(value, "%d", &num)
 	return fmt.Sprintf("%02d", num)
 }
+
+func NormalizeMonthDayInt(value int) string {
+	return fmt.Sprintf("%02d", value)
+}
