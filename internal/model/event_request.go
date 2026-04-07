@@ -1,8 +1,8 @@
 package model
 
 type GetEventsRequest struct {
-	Month int    `json:"month" binding:"required,gte=1,lte=31"`
-	Day   int    `json:"day" binding:"required,gte=1,lte=31"`
-	Typ   string `json:"type" binding:"omitempty,oneof=events births deaths holidays selected all"`
-	Lang  string `json:"language" binding:"omitempty,oneof=tr en"`
+	Month int    `form:"month" binding:"required,gte=1,lte=31"`
+	Day   int    `form:"day" binding:"required,gte=1,lte=31"`
+	Typ   string `form:"type" binding:"omitempty,oneof=events births deaths holidays selected all"`
+	Lang  string `form:"language" binding:"omitempty,oneof=tr en"`
 }
