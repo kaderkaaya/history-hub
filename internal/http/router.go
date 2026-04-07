@@ -21,6 +21,7 @@ func HistoryHubRouter(eventsHandler *handlers.EventsHandler) *gin.Engine {
 
 	r.GET("/health", handlers.HealthHandler)
 	events := r.Group("/events")
-	events.GET("/get-events", eventsHandler.GetEvents)
+	events.GET("/list", eventsHandler.GetEvents)
+	events.GET("/today", eventsHandler.GetTodayEvents)
 	return r
 }
