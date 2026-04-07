@@ -22,7 +22,7 @@ func (eventHandler *EventsHandler) GetTodayEvents(c *gin.Context) {
 	req := model.GetTodayRequest{Typ: "events", Lang: "en"}
 
 	if err := c.ShouldBindQuery(&req); err != nil {
-		c.JSON(400, model.ErrorResponse{Code: 1001, Message: "Validation Error", Error: err})
+		RespondError(c, 400, 1001, "Validation Error", err)
 		return
 	}
 	now := time.Now()
@@ -31,7 +31,7 @@ func (eventHandler *EventsHandler) GetTodayEvents(c *gin.Context) {
 	day := now.Day()
 	events, cached, err := eventHandler.service.GetEvents(c.Request.Context(), req.Lang, req.Typ, utils.NormalizeMonthDayInt(int(month)), utils.NormalizeMonthDayInt(day), isToday)
 	if err != nil {
-		c.JSON(500, model.ErrorResponse{Code: 1004, Message: "failed to fetch events", Error: err})
+		RespondError(c, 500, 1004, "failed to fetch events", err)
 		return
 	}
 
