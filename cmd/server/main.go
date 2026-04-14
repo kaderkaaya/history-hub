@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"      //Logger kütüphanesi yani conloglar için bu kütüpü import ederiz.
 	"net/http" //web server kütüp
 	"time"
 
+	"history-hub/internal/cache"
 	config "history-hub/internal/config"
 	apphttp "history-hub/internal/http"
 	handlers "history-hub/internal/http/handlers"
@@ -15,9 +17,14 @@ import (
 
 func main() {
 	cfg := config.Load()
+	redisAddr := cfg.RedisHost + ":" + cfg.RedisPort
+	redisClient := cache.NewRedisClient(redisAddr, cfg.RedisPassword, 0)
+	if err := redisClient.Ping(context.Background()); err != nil {
+		log.Fatalf("failed to connect redis: %v", err)
+	}
 	fmt.Printf("cfg.WikimediaBaseURL", cfg.WikimediaBaseURL)
 	client := provider.NewClient(cfg.WikimediaBaseURL, 10*time.Second, "history-hub")
-	eventService := service.NewEventsService(client)
+	eventService := service.NewEventsService(client, redisClient, cfg.CacheTTLTodayH, cfg.CacheTTLPastH)
 	eventHandler := handlers.NewEventsHandler(eventService)
 	router := apphttp.HistoryHubRouter(eventHandler)
 	log.Println("server started on :8080")
