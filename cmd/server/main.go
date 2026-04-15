@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"      //Logger kütüphanesi yani conloglar için bu kütüpü import ederiz.
 	"net/http" //web server kütüp
 	"time"
@@ -19,19 +18,9 @@ func main() {
 	cfg := config.Load()
 	redisAddr := cfg.RedisHost + ":" + cfg.RedisPort
 	redisClient := cache.NewRedisClient(redisAddr, cfg.RedisPassword, 0)
-	fmt.Printf("redisAddr: %s", redisAddr)
-	fmt.Printf("cfg.RedisPassword: %s", cfg.RedisPassword)
-	fmt.Printf("cfg.CacheTTLTodayH: %d", cfg.CacheTTLTodayH)
-	fmt.Printf("cfg.CacheTTLPastH: %d", cfg.CacheTTLPastH)
-	fmt.Printf("cfg.WikimediaBaseURL: %s", cfg.WikimediaBaseURL)
-	fmt.Printf("cfg.AppPort: %s", cfg.AppPort)
-	fmt.Printf("cfg.AppEnv: %s", cfg.AppEnv)
-	fmt.Printf("cfg.RedisHost: %s", cfg.RedisHost)
-	fmt.Printf("cfg.RedisPort: %s", cfg.RedisPort)
 	if err := redisClient.Ping(context.Background()); err != nil {
 		log.Fatalf("failed to connect redis: %v", err)
 	}
-	fmt.Printf("cfg.WikimediaBaseURL", cfg.WikimediaBaseURL)
 	client := provider.NewClient(cfg.WikimediaBaseURL, 10*time.Second, "history-hub")
 	eventService := service.NewEventsService(client, redisClient, cfg.CacheTTLTodayH, cfg.CacheTTLPastH)
 	eventHandler := handlers.NewEventsHandler(eventService)
