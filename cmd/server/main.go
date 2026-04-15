@@ -19,6 +19,15 @@ func main() {
 	cfg := config.Load()
 	redisAddr := cfg.RedisHost + ":" + cfg.RedisPort
 	redisClient := cache.NewRedisClient(redisAddr, cfg.RedisPassword, 0)
+	fmt.Printf("redisAddr: %s", redisAddr)
+	fmt.Printf("cfg.RedisPassword: %s", cfg.RedisPassword)
+	fmt.Printf("cfg.CacheTTLTodayH: %d", cfg.CacheTTLTodayH)
+	fmt.Printf("cfg.CacheTTLPastH: %d", cfg.CacheTTLPastH)
+	fmt.Printf("cfg.WikimediaBaseURL: %s", cfg.WikimediaBaseURL)
+	fmt.Printf("cfg.AppPort: %s", cfg.AppPort)
+	fmt.Printf("cfg.AppEnv: %s", cfg.AppEnv)
+	fmt.Printf("cfg.RedisHost: %s", cfg.RedisHost)
+	fmt.Printf("cfg.RedisPort: %s", cfg.RedisPort)
 	if err := redisClient.Ping(context.Background()); err != nil {
 		log.Fatalf("failed to connect redis: %v", err)
 	}

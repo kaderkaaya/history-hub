@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+  historyhub-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: historyhub-api
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./.env
+    environment:
+      - PORT=8080
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    restart: unless-stopped
