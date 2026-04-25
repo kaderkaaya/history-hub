@@ -6,19 +6,43 @@ import (
 	"net/http"
 )
 
+type WikimediaImage struct {
+	Source string `json:"source"`
+	Width  int    `json:"width,omitempty"`
+	Height int    `json:"height,omitempty"`
+}
+
+type WikimediaTitles struct {
+	Canonical  string `json:"canonical"`
+	Normalized string `json:"normalized"`
+	Display    string `json:"display"`
+}
+
+type WikimediaPage struct {
+	Title         string          `json:"title"`
+	Titles        WikimediaTitles `json:"titles"`
+	Extract       string          `json:"extract"`
+	Thumbnail     WikimediaImage  `json:"thumbnail"`
+	OriginalImage WikimediaImage  `json:"originalimage"`
+	ContentURLs   struct {
+		Desktop struct {
+			Page string `json:"page"`
+		} `json:"desktop"`
+	} `json:"content_urls"`
+}
+
+type WikimediaEvent struct {
+	Year  int             `json:"year"`
+	Text  string          `json:"text"`
+	Pages []WikimediaPage `json:"pages"`
+}
+
 type OnThisDayResponse struct { //wikimedianın dondugu response.
-	Events []struct {
-		Year  int    `json:"year"`
-		Text  string `json:"text"`
-		Pages []struct {
-			Title       string `json:"title"`
-			ContentURLs struct {
-				Desktop struct {
-					Page string `json:"page"`
-				} `json:"desktop"`
-			} `json:"content_urls"`
-		} `json:"pages"`
-	} `json:"events"`
+	Events   []WikimediaEvent `json:"events,omitempty"`
+	Deaths   []WikimediaEvent `json:"deaths,omitempty"`
+	Holidays []WikimediaEvent `json:"holidays,omitempty"`
+	Selected []WikimediaEvent `json:"selected,omitempty"`
+	Births   []WikimediaEvent `json:"births,omitempty"`
 }
 
 func (c *Client) GetOnThisDay(lang, typ, month, day string) (*OnThisDayResponse, error) {

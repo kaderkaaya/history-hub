@@ -42,14 +42,43 @@ func (eventService *EventsService) GetEvents(ctx context.Context, lang, typ, mon
 	}
 
 	var events []models.Event
-	for _, e := range data.Events {
-		var title, url string
-		if len(e.Pages) > 0 {
-			title = e.Pages[0].Title
-			url = e.Pages[0].ContentURLs.Desktop.Page
+	
+	// Determine which event list to use based on what is populated
+	var sourceEvents []provider.WikimediaEvent
+	if len(data.Events) > 0 {
+		sourceEvents = data.Events
+	} else if len(data.Deaths) > 0 {
+		sourceEvents = data.Deaths
+	} else if len(data.Holidays) > 0 {
+		sourceEvents = data.Holidays
+	} else if len(data.Selected) > 0 {
+		sourceEvents = data.Selected
+	} else if len(data.Births) > 0 {
+		sourceEvents = data.Births
+	}
+
+	for _, e := range sourceEvents {
+		pages := make([]models.EventPage, 0, len(e.Pages))
+		for _, p := range e.Pages {
+			image := p.OriginalImage.Source
+			if image == "" {
+				image = p.Thumbnail.Source
+			}
+			title := p.Titles.Normalized
+			if title == "" {
+				title = p.Title
+			}
+			pages = append(pages, models.EventPage{
+				Title:   title,
+				Extract: p.Extract,
+				Image:   image,
+				URL:     p.ContentURLs.Desktop.Page,
+			})
 		}
 		events = append(events, models.Event{
-			Year: e.Year, Text: e.Text, Title: title, URL: url,
+			Year:  e.Year,
+			Text:  e.Text,
+			Pages: pages,
 		})
 	}
 
